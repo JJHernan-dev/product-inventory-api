@@ -1,5 +1,7 @@
 package com.juanjesus.productinventory.service;
 
+import com.juanjesus.productinventory.dto.ProductRequestDto;
+import com.juanjesus.productinventory.dto.ProductResponseDto;
 import com.juanjesus.productinventory.entity.Product;
 import com.juanjesus.productinventory.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -16,13 +18,25 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductResponseDto> getAllProducts() {
+        return productRepository.findAll()
+                .stream()
+                .map(product -> new ProductResponseDto(
+                        product.getName(),
+                        product.getPrice()
+                ))
+                .toList();
     }
 
     @Override
-    public Product createProduct(Product product){
+    public Product createProduct(ProductRequestDto dto){
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setStock(dto.getStock());
         return productRepository.save(product);
     }
+
+
 
 }
